@@ -128,8 +128,9 @@ public class DonHangController : Controller
         var danhSachMa = (Request.Cookies[TenCookieDonCuaToi] ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
         if (danhSachMa.Count == 0) return View(new List<DonHang>());
 
-        var danhSachDon = await _csdl.DonHang.AsNoTracking()
+        var danhSachDon = await _csdl.DonHang.AsNoTracking().AsSplitQuery()
             .Include(d => d.BanAn).Include(d => d.DanhSachChiTiet).ThenInclude(c => c.MonAn)
+            .Include(d => d.DanhSachChiTiet).ThenInclude(c => c.DanhSachTopping)
             .Where(d => danhSachMa.Contains(d.MaTheoDoi)).ToListAsync();
         var theoThuTu = danhSachMa.Select(ma => danhSachDon.FirstOrDefault(d => d.MaTheoDoi == ma)).Where(d => d != null).Cast<DonHang>().ToList();
         return View(theoThuTu);

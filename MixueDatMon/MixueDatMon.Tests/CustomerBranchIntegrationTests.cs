@@ -55,6 +55,31 @@ public class CustomerBranchIntegrationTests
     }
 
     [Fact]
+    public async Task CustomerHistory_IncludesToppingPricesInOrderTotal()
+    {
+        using var db = HoTroKiemThu.TaoContext();
+        var group = new NhomMon { MaNhomMon = 1, TenNhomMon = "Test drinks" };
+        var product = new MonAn { MaMonAn = 1, MaNhomMon = 1, NhomMon = group, TenMon = "Test tea", Gia = 25000m };
+        var topping = new Topping { MaTopping = 1, TenTopping = "Test topping", Gia = 3000m };
+        db.DonHang.Add(new DonHang
+        {
+            MaTheoDoi = "HISTORY-TOTAL",
+            DanhSachChiTiet = new List<ChiTietDonHang>
+            {
+                new() { MonAn = product, SoLuong = 2, DonGia = 25000m,
+                    DanhSachTopping = new List<ChiTietTopping> { new() { Topping = topping, DonGia = 3000m } } }
+            }
+        });
+        await db.SaveChangesAsync();
+        db.ChangeTracker.Clear();
+        var controller = CustomerController(db);
+        controller.Request.Headers.Cookie = "mx_don_cua_toi=HISTORY-TOTAL";
+        var result = Assert.IsType<ViewResult>(await controller.DonCuaToi());
+        var order = Assert.Single(Assert.IsType<List<DonHang>>(result.Model));
+        Assert.Equal(56000m, order.TongTien);
+    }
+
+    [Fact]
     public async Task PointsPage_ReadsSharedServicePointsWithoutDoubleCredit()
     {
         using var db = HoTroKiemThu.TaoContext();
