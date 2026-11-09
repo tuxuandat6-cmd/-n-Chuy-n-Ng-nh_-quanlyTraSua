@@ -1,0 +1,132 @@
+{
+  "source_archive": "Do_An_Chuyen_Nganh (1).zip",
+  "note": "All code files byte-for-byte original; some are shared project files.",
+  "files": [
+    {
+      "path": "MixueDatMon/Database/MixueDatMonDb.sql",
+      "purpose": "CSDL SQL-first",
+      "scope": "shared",
+      "bytes": 19857,
+      "sha256": "9f8c2d24a7c000b76813204f543d340ab06e24ba81242a01dd9ff0137ee02801"
+    },
+    {
+      "path": "MixueDatMon/Database/CapNhat_MaGiamGia_TichDiem.sql",
+      "purpose": "CSDL tích điểm / mã giảm giá",
+      "scope": "related",
+      "bytes": 5826,
+      "sha256": "1acd7469f75fa1491f13ea05ade5ba2db56f373fad5e5d93cdbe36590e081a15"
+    },
+    {
+      "path": "MixueDatMon/DichVu/DichVuKhuyenMai.cs",
+      "purpose": "Logic mã giảm giá và tích điểm theo thanh toán",
+      "scope": "shared",
+      "bytes": 9769,
+      "sha256": "b60014b16a7c0e5f535f93c5e6511a009d5e64d013237ef9d78efea6d16e26c5"
+    },
+    {
+      "path": "MixueDatMon/Controllers/ThuNganController.cs",
+      "purpose": "Giao diện/Payment backend thu ngân, nhưng controller chứa nghiệp vụ nhóm dùng chung",
+      "scope": "shared",
+      "bytes": 39530,
+      "sha256": "432e01ecf6d4b13a42829650354973aaae278bfed8ba2feb1f2a69eaf4b0f923"
+    },
+    {
+      "path": "MixueDatMon/Views/ThuNgan/CanhBaoKho.cshtml",
+      "purpose": "Giao diện nhân viên",
+      "scope": "related",
+      "bytes": 5520,
+      "sha256": "d92e00cb539ca2e6773c86b4b2581706c2490d2235a5e0302a02995cf329786d"
+    },
+    {
+      "path": "MixueDatMon/Views/ThuNgan/DoiSoat.cshtml",
+      "purpose": "Giao diện nhân viên / đối soát thanh toán",
+      "scope": "related",
+      "bytes": 9480,
+      "sha256": "f007baddaa426d33ca3f84da55955018afa9125763fed0c63e5c0e02c7d4a626"
+    },
+    {
+      "path": "MixueDatMon/Views/ThuNgan/Index.cshtml",
+      "purpose": "Giao diện nhân viên / hiển thị bàn",
+      "scope": "related",
+      "bytes": 2785,
+      "sha256": "d75eaa33f195535c4620acf9e3d4b25fc718fb468f203a1e7999c822f5990eb4"
+    },
+    {
+      "path": "MixueDatMon/Views/ThuNgan/InPhieu.cshtml",
+      "purpose": "Giao diện nhân viên / in phiếu",
+      "scope": "related",
+      "bytes": 2874,
+      "sha256": "e0b03ce8a4108f99b2f518839a0dbe850d5d1b21a6a26acacb48cb3fbd9b25aa"
+    },
+    {
+      "path": "MixueDatMon/Views/ThuNgan/LichSu.cshtml",
+      "purpose": "Giao diện nhân viên / lịch sử đơn",
+      "scope": "related",
+      "bytes": 5300,
+      "sha256": "4e940111389b53be3b6d2b48ed29acb50a825b3d13d731bb59b1d61ee642c556"
+    },
+    {
+      "path": "MixueDatMon/Views/ThuNgan/TaoDon.cshtml",
+      "purpose": "Giao diện nhân viên / tạo đơn tại quầy",
+      "scope": "related",
+      "bytes": 6065,
+      "sha256": "fc66f2d536c3146f0671aa4cefed3498e9550ba248f3032f21c88ebcf335afb2"
+    },
+    {
+      "path": "MixueDatMon/Views/DonHang/DiemCuaToi.cshtml",
+      "purpose": "Giao diện tra cứu điểm tích lũy",
+      "scope": "related",
+      "bytes": 2075,
+      "sha256": "47c58a935c3ec33ab44f7d9e55af0f889b3ef82959f9e784e7df6e56916d9d7d"
+    },
+    {
+      "path": "MixueDatMon/Views/Shared/_StaffLayout.cshtml",
+      "purpose": "Layout dùng chung cho nhân viên và quản lý",
+      "scope": "shared",
+      "bytes": 8498,
+      "sha256": "925533df80a19d6d55223ebcd28e832f1018a0353a34b7570fb2df9ea2f95961"
+    },
+    {
+      "path": "MixueDatMon/wwwroot/js/nhanvien.js",
+      "purpose": "Logic giao diện nhân viên, hỗ trợ xác nhận thanh toán",
+      "scope": "related",
+      "bytes": 7204,
+      "sha256": "b0e582f092dd9f10ba20cedbc56478cdf0972ed230a7d3f9e2c246340401b3de"
+    },
+    {
+      "path": "MixueDatMon/wwwroot/js/thungan.js",
+      "purpose": "Bảng đơn/bàn thu ngân",
+      "scope": "related",
+      "bytes": 21580,
+      "sha256": "c75eb7144dd0db3b78d03c98374a9047bf05f2f7da87ce6b6ca2e9e94bcbf12d"
+    },
+    {
+      "path": "MixueDatMon/wwwroot/js/taodon.js",
+      "purpose": "Tạo đơn và thanh toán tại quầy",
+      "scope": "related",
+      "bytes": 11561,
+      "sha256": "a7b97dc4ca0085beb866af4d309673cd10dcc9ae1be1df060cc9df38f44321a5"
+    },
+    {
+      "path": "MixueDatMon/wwwroot/js/doisoat.js",
+      "purpose": "Đối soát thanh toán",
+      "scope": "related",
+      "bytes": 2686,
+      "sha256": "54d74100102e6902340be802c82f17e20846748ac6a9d5174301618fd19fd242"
+    },
+    {
+      "path": "MixueDatMon/MixueDatMon.Tests/TinhTienTests.cs",
+      "purpose": "Unit test tính tiền thuộc phạm vi thanh toán; quyền tác giả chưa được phân tách",
+      "scope": "shared",
+      "bytes": 2076,
+      "sha256": "ad8781249d0e71e974d412e5e407e7d21336d380afb0a60c05eb1ccd3ad8fb77"
+    },
+    {
+      "path": "MixueDatMon/MixueDatMon.Tests/DichVuKhuyenMaiTests.cs",
+      "purpose": "Unit test khuyến mãi; quyền tác giả chưa được phân tách",
+      "scope": "shared",
+      "bytes": 3704,
+      "sha256": "aa2eb0b6abbc8f425f663af54a4de3286aea5e151159f0d98b2122e3e34e30e3"
+    }
+  ]
+}
