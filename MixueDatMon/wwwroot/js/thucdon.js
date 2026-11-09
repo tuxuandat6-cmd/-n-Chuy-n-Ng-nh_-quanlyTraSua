@@ -9,7 +9,15 @@
   const layToken = () => document.querySelector('input[name="__RequestVerificationToken"]')?.value ?? '';
 
   let gioHang = [];
-  try { gioHang = JSON.parse(localStorage.getItem(KHOA_LUU)) || []; } catch { gioHang = []; }
+  try {
+    const daLuu = JSON.parse(localStorage.getItem(KHOA_LUU));
+    gioHang = Array.isArray(daLuu) ? daLuu.filter((d) =>
+      d && Number.isInteger(d.maMonAn) && d.maMonAn > 0 &&
+      Number.isFinite(d.gia) && d.gia >= 0 &&
+      Number.isInteger(d.soLuong) && d.soLuong >= 1 && d.soLuong <= 20 &&
+      Array.isArray(d.danhSachTopping) && d.danhSachTopping.every((t) =>
+        t && Number.isInteger(t.ma) && t.ma > 0 && Number.isFinite(t.gia) && t.gia >= 0)) : [];
+  } catch { gioHang = []; }
   const luuGioHang = () => { try { localStorage.setItem(KHOA_LUU, JSON.stringify(gioHang)); } catch { /* trình duyệt chặn storage */ } };
   const tienMotDong = (dong) => (dong.gia + dong.danhSachTopping.reduce((tong, t) => tong + t.gia, 0)) * dong.soLuong;
 
@@ -128,7 +136,8 @@
     return size ? size.gia : monDangChon.gia;
   }
   function tinhTienDangChon() {
-    const tienTopping = [...document.querySelectorAll('#topChoices input:checked')].reduce((tong, x) => tong + +x.dataset.gia, 0);
+    const tienTopping = monDangChon.coTuyChonDoUong
+      ? [...document.querySelectorAll('#topChoices input:checked')].slice(0, 5).reduce((tong, x) => tong + +x.dataset.gia, 0) : 0;
     return (giaMonDangChon() + tienTopping) * soLuongDangChon;
   }
   function capNhatNutThem() {
@@ -141,7 +150,7 @@
     const ma = +nut.dataset.ma;
     const sizes = layGiaTheoSize(ma);
     const coTuyChonDoUong = nut.dataset.tuyChon === '1';
-    monDangChon = { ma, ten: nut.dataset.ten, gia: +nut.dataset.gia, coSize: sizes.length > 0, sizes };
+    monDangChon = { ma, ten: nut.dataset.ten, gia: +nut.dataset.gia, coSize: sizes.length > 0, coTuyChonDoUong, sizes };
 
     if (!coTuyChonDoUong && !monDangChon.coSize) {   // món kem/sundae không size: không có đá/đường/topping/size
       themVaoGio({ maMonAn: monDangChon.ma, ten: monDangChon.ten, gia: monDangChon.gia, soLuong: 1, maKichCo: null, tenKichCo: '', maMucDa: null, tenMucDa: '', maMucDuong: null, tenMucDuong: '', danhSachTopping: [], ghiChu: '' });
@@ -198,10 +207,10 @@
   $('#optForm').addEventListener('submit', (e) => {
     e.preventDefault();
     if (monDangChon.coSize && !sizeDangChon()) { return; }   // bắt buộc chọn size nếu món có size
-    const mucDa = document.querySelector('#iceChoices input:checked');
-    const mucDuong = document.querySelector('#sugarChoices input:checked');
+    const mucDa = monDangChon.coTuyChonDoUong ? document.querySelector('#iceChoices input:checked') : null;
+    const mucDuong = monDangChon.coTuyChonDoUong ? document.querySelector('#sugarChoices input:checked') : null;
     const size = sizeDangChon();
-    const danhSachTopping = [...document.querySelectorAll('#topChoices input:checked')].slice(0, 5)
+    const danhSachTopping = (monDangChon.coTuyChonDoUong ? [...document.querySelectorAll('#topChoices input:checked')] : []).slice(0, 5)
       .map((x) => ({ ma: +x.value, ten: x.dataset.ten, gia: +x.dataset.gia }));
     themVaoGio({
       maMonAn: monDangChon.ma, ten: monDangChon.ten, gia: giaMonDangChon(), soLuong: soLuongDangChon,

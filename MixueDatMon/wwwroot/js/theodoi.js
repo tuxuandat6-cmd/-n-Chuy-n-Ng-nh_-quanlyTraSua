@@ -20,6 +20,7 @@
   let trangThaiTruoc = 0;
 
   function veLai(maTrangThai, daThanhToan) {
+    if (!Object.hasOwn(noiDung, maTrangThai)) return;
     const biHuy = maTrangThai === 5;
     const canThanhToanTruoc = mangDi && !daThanhToan && maTrangThai === 1;
     document.getElementById('headline').textContent = canThanhToanTruoc ? 'Vui lòng thanh toán tại quầy' : noiDung[maTrangThai][0];
@@ -101,7 +102,9 @@
 
   veLai(+goc.dataset.trangThai, goc.dataset.daThanhToan === '1');
 
-  const ketNoi = new signalR.HubConnectionBuilder().withUrl('/hubs/donhang').withAutomaticReconnect().build();
+  setInterval(lamMoi, 30000);   // vẫn polling ngay cả khi thư viện SignalR không tải được
+  if (!window.signalR) { lamMoi(); return; }
+  const ketNoi = new window.signalR.HubConnectionBuilder().withUrl('/hubs/donhang').withAutomaticReconnect().build();
   ketNoi.on('TrangThaiThayDoi', (duLieu) => veLai(duLieu.maTrangThai, duLieu.daThanhToan));
   ketNoi.onreconnected(async () => { await ketNoi.invoke('ThamGiaDon', maTheoDoi); lamMoi(); });
   async function batDau() {
@@ -109,5 +112,4 @@
     catch { setTimeout(batDau, 3000); }
   }
   batDau();
-  setInterval(lamMoi, 30000);   // dự phòng nếu mạng chập chờn
 })();
