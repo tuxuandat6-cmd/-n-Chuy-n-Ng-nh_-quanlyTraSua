@@ -30,6 +30,17 @@
 
   // ---------- Mã giảm giá ----------
   let maDaApDung = null;   // { maCode, soTienGiam }
+  let phienBanGio = 0, dangGuiDon = false;
+
+  function gioDaThayDoi() {
+    phienBanGio++;
+    if (maDaApDung || $('#apDungMa').disabled) {
+      const ketQua = $('#maGiamGiaKetQua');
+      ketQua.className = 'ma-giam-gia-ket-qua';
+      ketQua.textContent = 'Giỏ hàng đã thay đổi. Vui lòng áp dụng lại mã giảm giá.';
+    }
+    maDaApDung = null;
+  }
 
   const layGiaTheoSize = (maMonAn) => cauHinh.giaTheoSize[String(maMonAn)] || [];
 
@@ -76,10 +87,12 @@
   }
 
   function themVaoGio(dongMoi) {
+    if (dangGuiDon) return;
     const khoa = [dongMoi.maMonAn, dongMoi.maKichCo, dongMoi.maMucDa, dongMoi.maMucDuong, dongMoi.danhSachTopping.map((t) => t.ma).sort().join('-'), dongMoi.ghiChu].join('|');
     const daCo = gioHang.find((d) => d.khoa === khoa);
     if (daCo) daCo.soLuong = Math.min(20, daCo.soLuong + dongMoi.soLuong);
     else gioHang.push({ ...dongMoi, khoa });
+    gioDaThayDoi();
     veLaiGioHang();
   }
 
@@ -113,12 +126,15 @@
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') dongGio(); });
 
   phanTu.danhSach.addEventListener('click', (e) => {
+    if (dangGuiDon) return;
     const nut = e.target.closest('button[data-hanh-dong]');
     if (!nut) return;
     const viTri = +nut.dataset.viTri;
+    if (!Number.isInteger(viTri) || !gioHang[viTri]) return;
     if (nut.dataset.hanhDong === 'tang') gioHang[viTri].soLuong = Math.min(20, gioHang[viTri].soLuong + 1);
     if (nut.dataset.hanhDong === 'giam') gioHang[viTri].soLuong = Math.max(1, gioHang[viTri].soLuong - 1);
     if (nut.dataset.hanhDong === 'xoa') gioHang.splice(viTri, 1);
+    gioDaThayDoi();
     veLaiGioHang();
   });
 
@@ -224,12 +240,14 @@
 
   // ---------- Áp dụng mã giảm giá ----------
   $('#apDungMa').addEventListener('click', async () => {
+    if (dangGuiDon || $('#apDungMa').disabled) return;
     const oMa = $('#maGiamGia');
     const oKetQua = $('#maGiamGiaKetQua');
     const ma = oMa.value.trim();
     if (!ma) { oKetQua.textContent = 'Vui lòng nhập mã giảm giá.'; oKetQua.className = 'ma-giam-gia-ket-qua khong-hop-le'; return; }
     if (gioHang.length === 0) { oKetQua.textContent = 'Giỏ hàng đang trống.'; oKetQua.className = 'ma-giam-gia-ket-qua khong-hop-le'; return; }
     $('#apDungMa').disabled = true;
+    const phienBanLucGui = phienBanGio;
     try {
       const phanHoi = await fetch('/DonHang/KiemTraMaGiamGia', {
         method: 'POST',
@@ -240,9 +258,10 @@
         })
       });
       const ketQua = await phanHoi.json().catch(() => ({}));
+      if (phienBanLucGui !== phienBanGio) return;
       oKetQua.classList.remove('hidden');
       oKetQua.textContent = ketQua.thongBao || 'Có lỗi xảy ra, vui lòng thử lại.';
-      if (ketQua.hopLe) {
+      if (phanHoi.ok && ketQua.hopLe) {
         oKetQua.className = 'ma-giam-gia-ket-qua hop-le';
         maDaApDung = { maCode: ma, soTienGiam: ketQua.soTienGiam };
       } else {
@@ -261,8 +280,10 @@
 
   // ---------- Gửi đơn ----------
   phanTu.nutGui.addEventListener('click', async () => {
+    if (dangGuiDon || gioHang.length === 0) return;
     phanTu.thongBao.textContent = '';
     if (!cauHinh.duocDatHang) { phanTu.thongBao.textContent = 'Quán hiện chưa nhận đơn, vui lòng tải lại trang để xem thông báo mới nhất.'; return; }
+    dangGuiDon = true;
     phanTu.nutGui.disabled = true;
     phanTu.nutGui.textContent = 'Đang gửi đơn...';
     try {
@@ -282,6 +303,7 @@
     } catch {
       phanTu.thongBao.textContent = 'Mất kết nối mạng. Kiểm tra Wi-Fi rồi bấm gửi lại.';
     } finally {
+      dangGuiDon = false;
       phanTu.nutGui.textContent = 'Gửi đơn cho quán';
       phanTu.nutGui.disabled = gioHang.length === 0;
     }

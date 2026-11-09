@@ -133,3 +133,46 @@ test('unknown status does not overwrite the last valid display', async () => {
   h.run('theodoi.js'); await h.intervals[0].fn();
   assert.equal(h.element('#headline').textContent, 'Quán đang pha chế cho bạn');
 });
+
+test('changing quantities invalidates the applied discount instead of showing an old total', async () => {
+  const h = harness(JSON.stringify([row]), { body: { hopLe: true, soTienGiam: 5000 } });
+  h.run('thucdon.js'); h.element('#maGiamGia').value = 'MIXUE10';
+  await h.element('#apDungMa').listeners.click();
+  assert.equal(h.element('#cartTotal').textContent, '45.000đ');
+  h.clickAction('giam');
+  assert.equal(h.element('#cartTotal').textContent, '25.000đ');
+  assert.match(h.element('#maGiamGiaKetQua').textContent, /áp dụng lại/);
+});
+
+test('a late discount response cannot apply to a different cart', async () => {
+  const h = harness(JSON.stringify([row])); h.run('thucdon.js');
+  let finish;
+  h.context.fetch = () => new Promise((resolve) => { finish = resolve; });
+  h.element('#maGiamGia').value = 'MIXUE10';
+  const pending = h.element('#apDungMa').listeners.click();
+  h.clickAction('giam');
+  finish({ ok: true, json: async () => ({ hopLe: true, soTienGiam: 5000 }) });
+  await pending;
+  assert.equal(h.element('#cartTotal').textContent, '25.000đ');
+});
+
+test('empty checkout does not send a request', async () => {
+  const h = harness(); h.run('thucdon.js');
+  await h.element('#sendOrder').listeners.click();
+  assert.equal(h.requests.length, 0);
+});
+
+test('checkout rejects repeated submission and freezes cart changes until failure', async () => {
+  const h = harness(JSON.stringify([row])); h.run('thucdon.js');
+  let finish, sends = 0;
+  h.context.fetch = () => { sends++; return new Promise((resolve) => { finish = resolve; }); };
+  const pending = h.element('#sendOrder').listeners.click();
+  await h.element('#sendOrder').listeners.click();
+  h.clickAction('xoa');
+  h.addProduct({ ma: '1', ten: 'Kem', gia: '10000', tuyChon: '0' });
+  assert.equal(sends, 1); assert.equal(h.cart().length, 1);
+  assert.equal(h.cart()[0].soLuong, 2);
+  finish({ ok: false, json: async () => ({ thanhCong: false, thongBao: 'Thử lại' }) });
+  await pending;
+  h.clickAction('giam'); assert.equal(h.cart()[0].soLuong, 1);
+});
