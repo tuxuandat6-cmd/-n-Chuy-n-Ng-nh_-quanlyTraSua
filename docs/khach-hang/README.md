@@ -4,9 +4,11 @@ Phạm vi Nguyễn Minh Duy (`nguyenminhduy090-alt`): phần khách hàng của 
 
 ## Nguồn và cách ghi nhận
 
-Mã được nhập có chọn lọc từ `Do_An_Chuyen_Nganh.zip` do người dùng cung cấp, giữ cấu trúc `MixueDatMon/`. Đây là mã có sẵn của dự án nhóm; ZIP không có lịch sử chứng minh ai viết từng dòng. Các commit `chore(customer): import ...` chỉ ghi nhận việc tách/nhập mã theo phạm vi được giao, không khẳng định Duy vừa viết các chức năng đó. Các sửa lỗi mới được ghi trong commit riêng.
+ZIP `Do_An_Chuyen_Nganh.zip` được giải nén riêng để kiểm tra, không upload lại. Khi đồng bộ, phát hiện `origin/master` đã có mã nguồn gốc do Từ Xuân Đạt upload: `06ba0cd` và `575c15e`. Branch khách hàng kế thừa nguyên các commit đó, giữ tác giả và lịch sử, rồi nối commit gốc của `main` vào branch riêng để có chung tổ tiên cho PR. Không merge vào `main` hoặc `master`.
 
-`nguon-ma.csv` ghi SHA-256 của các file gốc trước sửa. Không nhập Admin, POS, SQL, cấu hình kết nối, dữ liệu khách hàng, ảnh uploads, DLL, bin/obj/.vs hoặc toàn bộ báo cáo. Những file shared được nhập chỉ là layout, partial và chỉ dẫn Razor phục vụ giao diện khách hàng; vẫn ghi nhận là dependency có sẵn của nhóm.
+`nguon-ma.csv` ghi SHA-256 của 17 file khách hàng/dependency UI trong ZIP trước sửa, phục vụ đối chiếu nguồn, không phải danh sách file mới do Duy viết. Code trang chủ, menu, giỏ hàng, checkout, lịch sử, điểm và các layout đều có sẵn trong nền của nhóm trưởng. Không commit lại các file đó dưới tên Duy. Các commit mới chỉ sửa JS khách hàng, thêm kiểm thử và tài liệu/sơ đồ. Admin, POS, SQL, cấu hình và báo cáo gốc chỉ xuất hiện qua lịch sử có sẵn của nhóm trưởng.
+
+Vì `main` chỉ có README, diff PR vào `main` sẽ bao gồm cả nền mã nguồn từ `master`. Reviewer cần phân biệt hai commit gốc của Từ Xuân Đạt với các commit mới của Nhánh A; dùng `git diff 575c15e..HEAD` để xem riêng phần thay đổi so với nền. Không coi toàn bộ diff PR là đóng góp của Duy. Nếu nhóm trưởng đưa nền lên main trước, cần đồng bộ lại PR theo lịch sử chuẩn của nhóm.
 
 ## Sơ đồ từ báo cáo
 
@@ -42,15 +44,15 @@ Luồng đặt hàng: xem menu → tùy chọn món → thêm/cập nhật giỏ
 
 ## Các dependency còn thiếu trên branch
 
-Đây là phần mã khách hàng để ghép vào dự án gốc, chưa phải ứng dụng độc lập. Không tạo project thay thế hoặc model trùng tên để che thiếu dependency.
+Nền ứng dụng hiện đã được kế thừa từ `master`, không còn thiếu các file dưới đây. Đây là dependency dùng chung của nhóm, giữ nguyên nghiệp vụ và tác giả; không phải đóng góp mới của Duy. ZIP còn được giữ cục bộ trong thư mục bỏ qua `.review-source/` để đối chiếu, không stage.
 
-| Dependency có trong ZIP, chưa nhập | Lý do/cách ghép |
+| Dependency nền được giữ nguyên | Vai trò |
 | --- | --- |
 | `MixueDatMon.csproj`, `Program.cs` | Nền khởi động và đăng ký EF, DI, session, antiforgery, routes, SignalR; cần bản chuẩn của nhóm |
 | `MoHinh/ThucThe.cs`, `MoHinh/ViewModels.cs`, `DuLieu/DuLieuContext.cs` | Chứa cả thực thể, view model, cấu hình dữ liệu của nhiều thành viên; dùng nguyên bản chuẩn khi ghép |
 | `DichVu/DichVuDatHang.cs`, `DichVuCaiDat.cs`, `DichVuKho.cs`, `DichVuKhuyenMai.cs`, `DichVuGioiHanTanSuat.cs`, `DichVuVietQr.cs` | Dịch vụ nghiệp vụ dùng chung; không nhận làm phần riêng |
 | `HubThoiGianThuc/DonHangHub.cs`, `TroGiup/DinhDang.cs` | Hợp đồng sự kiện và định dạng dùng chung |
-| `wwwroot/css/site.css`, thư viện SignalR, ảnh sản phẩm | CSS có cả phần nhân viên; cần ghép asset gốc/thư viện chuẩn, không nhập toàn bộ CSS hoặc uploads |
-| Database và cấu hình kết nối/VietQR | Do nhóm cung cấp bằng cấu hình môi trường an toàn; không commit SQL hoặc thông tin thật |
+| `wwwroot/css/site.css`, thư viện SignalR, ảnh sản phẩm | CSS có cả phần nhân viên, giữ nguyên; ảnh uploads trong ZIP không đưa lên, nền Git chỉ có `.gitkeep`. Kiểm tra CDN SignalR và bố trí ảnh khi triển khai |
+| Database và cấu hình kết nối/VietQR | Các file nền đã có trong commit nhóm trưởng; không sửa hoặc commit lại. Cần SQL Server, dữ liệu thử và cấu hình môi trường được nhóm xác nhận để chạy kiểm thử end-to-end |
 
 Không sửa phần quản lý/thu ngân, không đóng Issue. PR cần nhóm trưởng review phạm vi nhập mã và các điểm tích hợp trước merge.
