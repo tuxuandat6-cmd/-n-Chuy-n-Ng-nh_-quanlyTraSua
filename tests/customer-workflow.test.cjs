@@ -31,11 +31,13 @@ function harness(storage = '[]', response = {}) {
   };
   doc.querySelectorAll = (selector) => selector === '#topChoices input:checked' ? toppings : [];
   const context = {
+    crypto: require('node:crypto').webcrypto, TextEncoder,
     document: doc, window: {}, navigator: {}, location: {}, console,
-    localStorage: { getItem: () => storage, setItem: (_, value) => { storage = value; } },
+    localStorage: { getItem: (key) => key === 'mx_gio_hang_v1' ? storage : null,
+      setItem: (key, value) => { if (key === 'mx_gio_hang_v1') storage = value; }, removeItem() {} },
     setTimeout: () => 1, clearTimeout() {},
     setInterval: (fn, delay) => { intervals.push({ fn, delay }); },
-    fetch: async (url, options) => { requests.push({ url, options }); return {
+    fetch: async (url, options) => { requests.push({ url, options }); if (url.endsWith('/ChuanBiDatHang')) return { ok: true, json: async () => ({ phieu: 'test-receipt' }) }; return {
       ok: response.ok ?? true, json: async () => response.body ?? { maTrangThai: 4, daThanhToan: true }
     }; }
   };
@@ -168,6 +170,8 @@ test('checkout rejects repeated submission and freezes cart changes until failur
   h.context.fetch = () => { sends++; return new Promise((resolve) => { finish = resolve; }); };
   const pending = h.element('#sendOrder').listeners.click();
   await h.element('#sendOrder').listeners.click();
+  // Allow the browser fingerprint step to complete before inspecting the pending request.
+  while (!finish) await new Promise((resolve) => setImmediate(resolve));
   h.clickAction('xoa');
   h.addProduct({ ma: '1', ten: 'Kem', gia: '10000', tuyChon: '0' });
   assert.equal(sends, 1); assert.equal(h.cart().length, 1);
@@ -175,4 +179,25 @@ test('checkout rejects repeated submission and freezes cart changes until failur
   finish({ ok: false, json: async () => ({ thanhCong: false, thongBao: 'Thử lại' }) });
   await pending;
   h.clickAction('giam'); assert.equal(h.cart()[0].soLuong, 1);
+});
+
+test('lost checkout response reuses the same server ticket on retry', async () => {
+  const h = harness(JSON.stringify([row])); h.run('thucdon.js');
+  let preparations = 0, submissions = 0;
+  const tickets = [];
+  h.context.fetch = async (url, options) => {
+    if (url.endsWith('/ChuanBiDatHang')) {
+      preparations++;
+      return { ok: true, json: async () => ({ phieu: 'durable-order-receipt' }) };
+    }
+    submissions++; tickets.push(options.headers['Checkout-Token']);
+    if (submissions === 1) throw new Error('Simulated response lost after save');
+    return { ok: true, json: async () => ({ thanhCong: true, duongDan: '/DonHang/TheoDoi?ma=TEST' }) };
+  };
+  await h.element('#sendOrder').listeners.click();
+  assert.equal(h.cart().length, 1);
+  await h.element('#sendOrder').listeners.click();
+  assert.equal(preparations, 1);
+  assert.deepEqual(tickets, ['durable-order-receipt', 'durable-order-receipt']);
+  assert.deepEqual(h.cart(), []);
 });

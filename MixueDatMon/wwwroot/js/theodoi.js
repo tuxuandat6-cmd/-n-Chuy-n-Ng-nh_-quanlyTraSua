@@ -52,7 +52,7 @@
   async function lamMoi() {
     try {
       const phanHoi = await fetch('/DonHang/LayTrangThai?ma=' + encodeURIComponent(maTheoDoi), { cache: 'no-store' });
-      if (phanHoi.ok) { const duLieu = await phanHoi.json(); veLai(duLieu.maTrangThai, duLieu.daThanhToan); }
+      if (phanHoi.ok) { const duLieu = await phanHoi.json(); veLai(duLieu.maTrangThai, duLieu.daThanhToan); goc.dataset.nguonCapNhat = 'polling'; }
     } catch { /* bỏ qua, lần sau thử lại */ }
   }
 
@@ -105,7 +105,7 @@
   setInterval(lamMoi, 30000);   // vẫn polling ngay cả khi thư viện SignalR không tải được
   if (!window.signalR) { lamMoi(); return; }
   const ketNoi = new window.signalR.HubConnectionBuilder().withUrl('/hubs/donhang').withAutomaticReconnect().build();
-  ketNoi.on('TrangThaiThayDoi', (duLieu) => veLai(duLieu.maTrangThai, duLieu.daThanhToan));
+  ketNoi.on('TrangThaiThayDoi', (duLieu) => { veLai(duLieu.maTrangThai, duLieu.daThanhToan); goc.dataset.nguonCapNhat = 'signalr'; });
   ketNoi.onreconnected(async () => { await ketNoi.invoke('ThamGiaDon', maTheoDoi); lamMoi(); });
   async function batDau() {
     try { await ketNoi.start(); await ketNoi.invoke('ThamGiaDon', maTheoDoi); lamMoi(); }

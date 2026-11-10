@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.DataProtection;
+using MixueDatMon.DichVu;
 using MixueDatMon.MoHinh;
 
 namespace MixueDatMon.HubThoiGianThuc;
@@ -10,6 +12,8 @@ namespace MixueDatMon.HubThoiGianThuc;
 /// </summary>
 public class DonHangHub : Hub
 {
+    private readonly BaoVeDonKhach _ownership;
+    public DonHangHub(IDataProtectionProvider protection) => _ownership = new(protection);
     public async Task ThamGiaNhanVien()
     {
         var nguoiDung = Context.User;
@@ -19,5 +23,7 @@ public class DonHangHub : Hub
     }
 
     public Task ThamGiaDon(string maTheoDoi) =>
-        Groups.AddToGroupAsync(Context.ConnectionId, "don-" + maTheoDoi);
+        Context.GetHttpContext() is { } http && _ownership.Owns(http, maTheoDoi)
+            ? Groups.AddToGroupAsync(Context.ConnectionId, "don-" + maTheoDoi)
+            : Task.FromException(new HubException("Không có quyền theo dõi đơn này."));
 }

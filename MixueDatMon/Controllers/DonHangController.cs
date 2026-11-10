@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
@@ -9,9 +10,11 @@ using MixueDatMon.MoHinh.VM;
 
 namespace MixueDatMon.Controllers;
 
+[ResponseCache(NoStore = true, Location = ResponseCacheLocation.None)]
 public class DonHangController : Controller
 {
     private readonly DuLieuContext _csdl;
+    private readonly BaoVeDonKhach _quyenDon;
     private readonly IHubContext<DonHangHub> _hub;
     private readonly DichVuDatHang _dichVuDatHang;
     private readonly DichVuVietQr _vietQr;
@@ -19,8 +22,8 @@ public class DonHangController : Controller
     private readonly DichVuKhuyenMai _khuyenMai;
     private readonly DichVuGioiHanTanSuat _gioiHan;
     public DonHangController(DuLieuContext csdl, IHubContext<DonHangHub> hub, DichVuDatHang dichVuDatHang, DichVuVietQr vietQr,
-        DichVuCaiDat caiDat, DichVuKhuyenMai khuyenMai, DichVuGioiHanTanSuat gioiHan)
-    { _csdl = csdl; _hub = hub; _dichVuDatHang = dichVuDatHang; _vietQr = vietQr; _caiDat = caiDat; _khuyenMai = khuyenMai; _gioiHan = gioiHan; }
+        DichVuCaiDat caiDat, DichVuKhuyenMai khuyenMai, DichVuGioiHanTanSuat gioiHan, IDataProtectionProvider protection)
+    { _quyenDon = new BaoVeDonKhach(protection); _csdl = csdl; _hub = hub; _dichVuDatHang = dichVuDatHang; _vietQr = vietQr; _caiDat = caiDat; _khuyenMai = khuyenMai; _gioiHan = gioiHan; }
 
     /// <summary>
     /// Khách gửi giỏ hàng. Khách quét QR bàn thì đơn gắn vào bàn (thanh toán sau tại quầy);
@@ -29,6 +32,19 @@ public class DonHangController : Controller
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> DatHang([FromBody] YeuCauDatHang yeuCau)
     {
+        if (yeuCau is null) return BadRequest();
+        var checkoutCode = _quyenDon.CheckoutCode(Request.Headers["Checkout-Token"], yeuCau);
+        if (checkoutCode is null) return BadRequest(new { thanhCong = false, thongBao = "Phiếu đặt hàng sai, đã hết hạn hoặc nội dung đã thay đổi. Vui lòng chuẩn bị lại đơn." });
+        await using var transaction = await _csdl.Database.BeginTransactionAsync(System.Data.IsolationLevel.Serializable);
+        // The existing unique index on MaTheoDoi plus update/range locks serializes concurrent replays.
+        var existing = await _csdl.DonHang.FromSqlInterpolated(
+            $"SELECT * FROM dbo.DonHang WITH (UPDLOCK, HOLDLOCK) WHERE MaTheoDoi = {checkoutCode}").FirstOrDefaultAsync();
+        if (existing is not null)
+        {
+            GhiDonVaoTrinhDuyet(existing.MaTheoDoi);
+            await transaction.CommitAsync();
+            return Ok(new { thanhCong = true, maTheoDoi = existing.MaTheoDoi, duongDan = Url.Action(nameof(TheoDoi), "DonHang", new { ma = existing.MaTheoDoi }) });
+        }
         var (duocDat, thongBaoDong) = await _caiDat.KiemTraNhanDonAsync();
         if (!duocDat) return BadRequest(new { thanhCong = false, thongBao = thongBaoDong });
 
@@ -49,10 +65,12 @@ public class DonHangController : Controller
 
         var (donHang, loi) = await _dichVuDatHang.DungDonAsync(yeuCau, maBan, kiemTraKho: true);
         if (donHang == null) return BadRequest(new { thanhCong = false, thongBao = loi });
+        donHang.MaTheoDoi = checkoutCode;
 
         _csdl.DonHang.Add(donHang);
         await _csdl.SaveChangesAsync();
         await _khuyenMai.GiuLuotAsync(donHang);
+        await transaction.CommitAsync();
 
         // Báo thời gian thực cho thu ngân
         await _hub.Clients.Group("nhanvien").SendAsync("CoDonMoi", new
@@ -63,6 +81,12 @@ public class DonHangController : Controller
         GhiDonVaoTrinhDuyet(donHang.MaTheoDoi);
         return Ok(new { thanhCong = true, maTheoDoi = donHang.MaTheoDoi, duongDan = Url.Action(nameof(TheoDoi), "DonHang", new { ma = donHang.MaTheoDoi }) });
     }
+
+    [HttpPost, ValidateAntiForgeryToken]
+    public IActionResult ChuanBiDatHang([FromBody] YeuCauDatHang request) =>
+        request?.DanhSachMon is { Count: > 0 and <= 40 }
+            ? Ok(new { phieu = _quyenDon.IssueTicket(request) })
+            : BadRequest(new { thongBao = "Giỏ hàng không hợp lệ." });
 
     /// <summary>Khách nhập mã giảm giá vào giỏ hàng trước khi gửi đơn: kiểm tra và trả về số tiền giảm thực tế.</summary>
     [HttpPost, ValidateAntiForgeryToken]
@@ -107,25 +131,12 @@ public class DonHangController : Controller
         return Ok(new { thanhCong = true, thongBao = yeuCau.Loai == HangSoYeuCau.GoiNhanVien ? "Đã báo nhân viên, bạn chờ chút nhé." : "Đã báo quầy, nhân viên sẽ ra thu tiền." });
     }
 
-    private const string TenCookieDonCuaToi = "mx_don_cua_toi";
-
-    /// <summary>Ghi mã đơn vào cookie trên máy khách để trang "Đơn của tôi" tìm lại được, kể cả khi khách lỡ đóng tab.</summary>
-    private void GhiDonVaoTrinhDuyet(string maTheoDoi)
-    {
-        var danhSach = (Request.Cookies[TenCookieDonCuaToi] ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
-        danhSach.Remove(maTheoDoi);
-        danhSach.Insert(0, maTheoDoi);
-        if (danhSach.Count > 15) danhSach = danhSach.Take(15).ToList();   // chỉ giữ 15 đơn gần nhất trên máy này
-        Response.Cookies.Append(TenCookieDonCuaToi, string.Join(',', danhSach), new CookieOptions
-        {
-            Expires = DateTimeOffset.Now.AddDays(30), HttpOnly = false, IsEssential = true, SameSite = SameSiteMode.Lax
-        });
-    }
+    private void GhiDonVaoTrinhDuyet(string maTheoDoi) => _quyenDon.Remember(HttpContext, maTheoDoi);
 
     /// <summary>Trang "Đơn của tôi": liệt kê các đơn khách từng đặt trên chính máy này (đọc từ cookie), mới nhất trước.</summary>
     public async Task<IActionResult> DonCuaToi()
     {
-        var danhSachMa = (Request.Cookies[TenCookieDonCuaToi] ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
+        var danhSachMa = _quyenDon.Read(HttpContext).ToList();
         if (danhSachMa.Count == 0) return View(new List<DonHang>());
 
         var danhSachDon = await _csdl.DonHang.AsNoTracking().AsSplitQuery()
@@ -139,6 +150,7 @@ public class DonHangController : Controller
     /// <summary>Trang khách theo dõi đơn của mình.</summary>
     public async Task<IActionResult> TheoDoi(string ma)
     {
+        if (!_quyenDon.Owns(HttpContext, ma)) return NotFound();
         var donHang = await _csdl.DonHang.AsNoTracking().AsSplitQuery()
             .Include(d => d.BanAn)
             .Include(d => d.DanhSachChiTiet).ThenInclude(c => c.MonAn)
@@ -160,6 +172,7 @@ public class DonHangController : Controller
     [HttpPost, ValidateAntiForgeryToken]
     public async Task<IActionResult> GuiDanhGia([FromBody] YeuCauDanhGia yeuCau)
     {
+        if (yeuCau != null && !_quyenDon.Owns(HttpContext, yeuCau.MaTheoDoi)) return NotFound();
         if (yeuCau == null || string.IsNullOrWhiteSpace(yeuCau.MaTheoDoi))
             return BadRequest(new { thanhCong = false, thongBao = "Thiếu mã đơn." });
 
@@ -209,6 +222,7 @@ public class DonHangController : Controller
     [HttpGet]
     public async Task<IActionResult> AnhQr(string ma)
     {
+        if (!_quyenDon.Owns(HttpContext, ma)) return NotFound();
         if (!_vietQr.DaCauHinh) return NotFound();
         var don = await (from d in _csdl.DonHang
                          join t in _csdl.TongTienDon on d.MaDonHang equals t.MaDonHang
@@ -224,6 +238,7 @@ public class DonHangController : Controller
     [HttpGet]
     public async Task<IActionResult> LayTrangThai(string ma)
     {
+        if (!_quyenDon.Owns(HttpContext, ma)) return NotFound();
         var don = await _csdl.DonHang.AsNoTracking().Where(d => d.MaTheoDoi == ma)
             .Select(d => new { d.MaTrangThai, daThanhToan = d.NgayThanhToan != null }).FirstOrDefaultAsync();
         if (don == null) return NotFound();

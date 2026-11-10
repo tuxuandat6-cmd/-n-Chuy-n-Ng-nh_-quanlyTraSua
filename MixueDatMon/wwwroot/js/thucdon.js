@@ -279,6 +279,7 @@
   });
 
   // ---------- Gửi đơn ----------
+  let phieuDatHangCache = null;
   phanTu.nutGui.addEventListener('click', async () => {
     if (dangGuiDon || gioHang.length === 0) return;
     phanTu.thongBao.textContent = '';
@@ -287,18 +288,33 @@
     phanTu.nutGui.disabled = true;
     phanTu.nutGui.textContent = 'Đang gửi đơn...';
     try {
-      const phanHoi = await fetch('/DonHang/DatHang', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', RequestVerificationToken: layToken() },
-        body: JSON.stringify({
+      const body = JSON.stringify({
           tenKhach: $('#custName').value, ghiChu: $('#custNote').value,
           soDienThoai: $('#custPhone').value.trim(), maGiamGia: maDaApDung ? maDaApDung.maCode : null,
           danhSachMon: gioHang.map((d) => ({ maMonAn: d.maMonAn, soLuong: d.soLuong, maKichCo: d.maKichCo, maMucDa: d.maMucDa, maMucDuong: d.maMucDuong, danhSachMaTopping: d.danhSachTopping.map((t) => t.ma), ghiChu: d.ghiChu }))
-        })
+        });
+      const signature = Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(body))))
+        .map((b) => b.toString(16).padStart(2, '0')).join('');
+      let receipt = phieuDatHangCache;
+      try { receipt ??= JSON.parse(localStorage.getItem('mx_checkout_receipt_v1')); } catch { /* storage unavailable */ }
+      if (!receipt || receipt.signature !== signature) {
+        const prepared = await fetch('/DonHang/ChuanBiDatHang', {
+          method: 'POST', headers: { 'Content-Type': 'application/json', RequestVerificationToken: layToken() }, body
+        });
+        const data = await prepared.json();
+        if (!prepared.ok || !data.phieu) throw new Error('Checkout preparation failed');
+        receipt = { signature, token: data.phieu };
+        try { localStorage.setItem('mx_checkout_receipt_v1', JSON.stringify(receipt)); } catch { /* page-local retry still possible */ }
+      }
+      phieuDatHangCache = receipt;
+      const phanHoi = await fetch('/DonHang/DatHang', {
+        method: 'POST', headers: { 'Content-Type': 'application/json', RequestVerificationToken: layToken(), 'Checkout-Token': receipt.token }, body
       });
       const ketQua = await phanHoi.json().catch(() => ({}));
       if (!phanHoi.ok || !ketQua.thanhCong) { phanTu.thongBao.textContent = ketQua.thongBao || 'Chưa gửi được đơn. Vui lòng tải lại trang và thử lại.'; return; }
       gioHang = []; maDaApDung = null; luuGioHang();
+      phieuDatHangCache = null;
+      try { localStorage.removeItem('mx_checkout_receipt_v1'); } catch { /* storage unavailable */ }
       location.href = ketQua.duongDan;
     } catch {
       phanTu.thongBao.textContent = 'Mất kết nối mạng. Kiểm tra Wi-Fi rồi bấm gửi lại.';
