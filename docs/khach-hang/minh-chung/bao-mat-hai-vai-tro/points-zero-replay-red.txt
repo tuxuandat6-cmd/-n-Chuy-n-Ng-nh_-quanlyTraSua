@@ -1,0 +1,16 @@
+C:\Program Files\dotnet\sdk\11.0.100-rc.3.26522.148\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.RuntimeIdentifierInference.targets(385,5): message NETSDK1057: You are using a preview version of .NET. See: https://aka.ms/dotnet-support-policy [C:\Users\Admin\OneDrive\Documents\ChatGPT\Project_HK5_Trasua\MixueDatMon\MixueDatMon.Tests\MixueDatMon.Tests.csproj]
+  MixueDatMon -> C:\Users\Admin\OneDrive\Documents\ChatGPT\Project_HK5_Trasua\MixueDatMon\bin\Debug\net8.0\MixueDatMon.dll
+  MixueDatMon.Tests -> C:\Users\Admin\OneDrive\Documents\ChatGPT\Project_HK5_Trasua\MixueDatMon\MixueDatMon.Tests\bin\Debug\net8.0\MixueDatMon.Tests.dll
+Test run for C:\Users\Admin\OneDrive\Documents\ChatGPT\Project_HK5_Trasua\MixueDatMon\MixueDatMon.Tests\bin\Debug\net8.0\MixueDatMon.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+[xUnit.net 00:00:01.28]     MixueDatMon.Tests.CustomerBranchIntegrationTests.PointsZeroValueReplay_MustNotDoubleCustomerSpending [FAIL]
+  Failed MixueDatMon.Tests.CustomerBranchIntegrationTests.PointsZeroValueReplay_MustNotDoubleCustomerSpending [1 s]
+  Error Message:
+   Assert.Equal() Failure: Values differ
+Expected: 5000
+Actual:   10000
+  Stack Trace:
+     at MixueDatMon.Tests.CustomerBranchIntegrationTests.PointsZeroValueReplay_MustNotDoubleCustomerSpending() in C:\Users\Admin\OneDrive\Documents\ChatGPT\Project_HK5_Trasua\MixueDatMon\MixueDatMon.Tests\CustomerBranchIntegrationTests.cs:line 151
+--- End of stack trace from previous location ---
+
+Failed!  - Failed:     1, Passed:     0, Skipped:     0, Total:     1, Duration: 1 s - MixueDatMon.Tests.dll (net8.0)

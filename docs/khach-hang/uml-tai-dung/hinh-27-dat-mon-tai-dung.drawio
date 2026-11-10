@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" agent="Customer diagram reconstruction; not original source">
+  <diagram id="Tái dựng Hình 27" name="Tái dựng Hình 27">
+    <mxGraphModel page="1" pageWidth="1400" pageHeight="1100">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="provenance" value="TÁI DỰNG từ bao_cao_ck.docx / Hình 27 — không phải file thiết kế gốc" style="text;html=0;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="10" width="1250" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="open" value="1. Mở thực đơn/Giao diện đặt món" style="html=0;whiteSpace=wrap;fillColor=#F0EBFF;strokeColor=#9673FF;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="60" width="380" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="menu" value="2. Xem danh sách món &amp; Danh mục" style="html=0;whiteSpace=wrap;fillColor=#F0EBFF;strokeColor=#9673FF;" vertex="1" parent="1">
+          <mxGeometry x="320" y="155" width="380" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="choose" value="3. Chọn món &amp; Tùy chỉnh số lượng" style="html=0;whiteSpace=wrap;fillColor=#F0EBFF;strokeColor=#9673FF;" vertex="1" parent="1">
+          <mxGeometry x="320" y="250" width="380" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="add" value="4. Thêm vào giỏ hàng" style="html=0;whiteSpace=wrap;fillColor=#F0EBFF;strokeColor=#9673FF;" vertex="1" parent="1">
+          <mxGeometry x="320" y="345" width="380" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="continue" value="5. Tiếp tục chọn món?" style="html=0;whiteSpace=wrap;fillColor=#F0EBFF;strokeColor=#9673FF;rhombus;" vertex="1" parent="1">
+          <mxGeometry x="320" y="440" width="380" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="cart" value="6. Kiểm tra giỏ hàng &amp; Nhập mã giảm giá" style="html=0;whiteSpace=wrap;fillColor=#F0EBFF;strokeColor=#9673FF;" vertex="1" parent="1">
+          <mxGeometry x="320" y="565" width="380" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="confirm" value="7. Xác nhận thông tin &amp; Đặt món" style="html=0;whiteSpace=wrap;fillColor=#F0EBFF;strokeColor=#9673FF;" vertex="1" parent="1">
+          <mxGeometry x="320" y="660" width="380" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="payment" value="8. Phương thức thanh toán" style="html=0;whiteSpace=wrap;fillColor=#F0EBFF;strokeColor=#9673FF;rhombus;" vertex="1" parent="1">
+          <mxGeometry x="320" y="755" width="380" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="end" value="Kết thúc: Gọi món thành công" style="html=0;whiteSpace=wrap;fillColor=#F0EBFF;strokeColor=#9673FF;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="320" y="900" width="380" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="flow0" value="" style="edgeStyle=orthogonalEdgeStyle;html=0;endArrow=block;" edge="1" parent="1" source="open" target="menu">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow1" value="" style="edgeStyle=orthogonalEdgeStyle;html=0;endArrow=block;" edge="1" parent="1" source="menu" target="choose">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow2" value="" style="edgeStyle=orthogonalEdgeStyle;html=0;endArrow=block;" edge="1" parent="1" source="choose" target="add">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow3" value="" style="edgeStyle=orthogonalEdgeStyle;html=0;endArrow=block;" edge="1" parent="1" source="add" target="continue">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow4" value="Không" style="edgeStyle=orthogonalEdgeStyle;html=0;endArrow=block;" edge="1" parent="1" source="continue" target="cart">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow5" value="" style="edgeStyle=orthogonalEdgeStyle;html=0;endArrow=block;" edge="1" parent="1" source="cart" target="confirm">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow6" value="" style="edgeStyle=orthogonalEdgeStyle;html=0;endArrow=block;" edge="1" parent="1" source="confirm" target="payment">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="flow7" value="" style="edgeStyle=orthogonalEdgeStyle;html=0;endArrow=block;" edge="1" parent="1" source="payment" target="end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="repeat" value="Có" style="edgeStyle=orthogonalEdgeStyle;html=0;endArrow=block;" edge="1" parent="1" source="continue" target="menu">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

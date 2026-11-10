@@ -1,0 +1,11 @@
+C:\Program Files\dotnet\sdk\11.0.100-rc.3.26522.148\Sdks\Microsoft.NET.Sdk\targets\Microsoft.NET.RuntimeIdentifierInference.targets(385,5): message NETSDK1057: You are using a preview version of .NET. See: https://aka.ms/dotnet-support-policy [C:\Users\Admin\OneDrive\Documents\ChatGPT\Project_HK5_Trasua\MixueDatMon\MixueDatMon.csproj]
+C:\Users\Admin\OneDrive\Documents\ChatGPT\Project_HK5_Trasua\MixueDatMon\Views\DonHang\TheoDoi.cshtml(97,58): warning CS8602: Dereference of a possibly null reference. [C:\Users\Admin\OneDrive\Documents\ChatGPT\Project_HK5_Trasua\MixueDatMon\MixueDatMon.csproj]
+  MixueDatMon -> C:\Users\Admin\OneDrive\Documents\ChatGPT\Project_HK5_Trasua\MixueDatMon\bin\Debug\net8.0\MixueDatMon.dll
+
+Build succeeded.
+
+C:\Users\Admin\OneDrive\Documents\ChatGPT\Project_HK5_Trasua\MixueDatMon\Views\DonHang\TheoDoi.cshtml(97,58): warning CS8602: Dereference of a possibly null reference. [C:\Users\Admin\OneDrive\Documents\ChatGPT\Project_HK5_Trasua\MixueDatMon\MixueDatMon.csproj]
+    1 Warning(s)
+    0 Error(s)
+
+Time Elapsed 00:00:03.40

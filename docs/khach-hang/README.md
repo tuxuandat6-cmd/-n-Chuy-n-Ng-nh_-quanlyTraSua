@@ -1,5 +1,7 @@
 # Nhánh A khách tự đặt hàng
 
+Cập nhật nghiệm thu bảo mật 10/11/2026: xem [kết quả mới nhất](minh-chung/bao-mat-hai-vai-tro/README.md), [báo cáo Word](Bao_cao_Nguyen_Minh_Duy_Nhanh_A.docx) và [sơ đồ chỉnh sửa được tái dựng](uml-tai-dung/README.md). C# 36 PASS + 1 SKIP, JS 13 PASS, HTTP/SQL 24 PASS và replay sau restart 1 PASS. Các mô tả lịch sử bên dưới về cookie/Hub được thay thế bằng bản nghiệm thu này: cookie đã được bảo vệ, HTTP/SignalR kiểm tra quyền sở hữu, checkout có phiếu chống replay. Hub có thay đổi tích hợp quyền của nhóm khách; phần nhân viên giữ nguyên.
+
 Cập nhật 10/11/2026: [ảnh ứng dụng và ma trận 7 bước](minh-chung/README.md), [đặc tả 2 Use Case khách hàng](USE-CASE-KHACH-HANG.md). Bộ HTTP/SQL mới đạt 14/14; số liệu cũ trong tài liệu lịch sử vẫn giữ đúng mốc.
 
 Phạm vi Nguyễn Minh Duy (`nguyenminhduy090-alt`): phần khách hàng của Issue #1, giao diện khách hàng #4 và trang chủ/menu/banner #7. Assignees đã được kiểm tra qua GitHub API. Không coi toàn bộ Issue #1 là công việc riêng của Duy.
@@ -8,7 +10,7 @@ Phạm vi Nguyễn Minh Duy (`nguyenminhduy090-alt`): phần khách hàng của 
 
 ZIP `Do_An_Chuyen_Nganh.zip` được giải nén riêng để kiểm tra, không upload lại. Khi đồng bộ, phát hiện `origin/master` đã có mã nguồn gốc do Từ Xuân Đạt upload: `06ba0cd` và `575c15e`. Branch khách hàng kế thừa nguyên các commit đó, giữ tác giả và lịch sử, rồi nối commit gốc của `main` vào branch riêng để có chung tổ tiên cho PR. Không merge vào `main` hoặc `master`.
 
-`nguon-ma.csv` ghi SHA-256 của 17 file khách hàng/dependency UI trong ZIP trước sửa, phục vụ đối chiếu nguồn, không phải danh sách file mới do Duy viết. Code trang chủ, menu, giỏ hàng, checkout, lịch sử, điểm và các layout đều có sẵn trong nền của nhóm trưởng. Không commit lại các file đó dưới tên Duy. Các commit mới chỉ sửa JS khách hàng, thêm kiểm thử và tài liệu/sơ đồ. Admin, POS, SQL, cấu hình và báo cáo gốc chỉ xuất hiện qua lịch sử có sẵn của nhóm trưởng.
+`nguon-ma.csv` ghi SHA-256 của 17 file khách hàng/dependency UI trong ZIP trước sửa, phục vụ đối chiếu nguồn, không phải danh sách file mới do Duy viết. Code trang chủ, menu, giỏ hàng, checkout, lịch sử, điểm và các layout đều có sẵn trong nền của nhóm trưởng. Không commit lại các file đó dưới tên Duy. Các commit mới sửa phần khách hàng trong controller/JS, thêm biên nhận và phiếu checkout, bảo vệ nhóm khách của Hub, cùng kiểm thử và tài liệu/sơ đồ. Admin, POS, SQL, cấu hình và báo cáo gốc chỉ xuất hiện qua lịch sử có sẵn của nhóm trưởng.
 
 Vì `main` chỉ có README, diff PR vào `main` sẽ bao gồm cả nền mã nguồn từ `master`. Reviewer cần phân biệt hai commit gốc của Từ Xuân Đạt với các commit mới của Nhánh A; dùng `git diff 575c15e..HEAD` để xem riêng phần thay đổi so với nền. Không coi toàn bộ diff PR là đóng góp của Duy. Nếu nhóm trưởng đưa nền lên main trước, cần đồng bộ lại PR theo lịch sử chuẩn của nhóm.
 
@@ -40,7 +42,7 @@ Luồng đặt hàng: xem menu → tùy chọn món → thêm/cập nhật giỏ
 ## Tích hợp và ranh giới
 
 - ZIP thực tế dùng mã trạng thái 1 Chờ xác nhận → 2 Đang làm → 3 Sẵn sàng → 4 Hoàn thành; 5 Đã hủy. Không đổi sang chuỗi trạng thái “Đang giao” của mô tả phân công khi hệ thống chưa hỗ trợ giao hàng.
-- Phía nhân viên có `ThuNganController.CapNhatTrangThai` và phát `TrangThaiThayDoi` tới nhóm `don-{maTheoDoi}`. Khách tham gia bằng `DonHangHub.ThamGiaDon`, hoặc GET `LayTrangThai` mỗi 30 giây. Chỉ đọc đối chiếu; không sửa/nhập controller thu ngân hoặc Hub dùng chung.
+- Phía nhân viên có `ThuNganController.CapNhatTrangThai` và phát `TrangThaiThayDoi` tới nhóm `don-{maTheoDoi}`. Khách tham gia bằng `DonHangHub.ThamGiaDon`, hoặc GET `LayTrangThai` mỗi 30 giây. Giữ nguyên controller thu ngân; chỉ bổ sung kiểm tra quyền sở hữu khi khách tham gia nhóm đơn trong Hub dùng chung.
 - Điểm trong ZIP được cộng tại `DichVuKhuyenMai.GhiNhanThanhToanAsync`, do thao tác thu tiền gọi; không phải lúc chuyển sang Hoàn thành. Vì thế chưa đạt yêu cầu “chỉ tích điểm khi hoàn thành”. Cần nhóm phụ trách nghiệp vụ thống nhất thời điểm cộng điểm; Nhánh A không tự sửa dịch vụ hoặc POS để thay đổi chính sách.
 - Báo cáo nói chỉ đánh giá sau hoàn tất; mã hiện có cho đánh giá từ Sẵn sàng hoặc Hoàn thành. Giữ nguyên hành vi có sẵn, ghi rõ khác biệt cho review.
 
