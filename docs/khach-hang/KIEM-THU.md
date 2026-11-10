@@ -1,5 +1,7 @@
 # Kiểm thử Nhánh A
 
+Lượt bổ sung **10/11/2026**: build PASS, C# 29/29, JS 12/12, HTTP/SQL 14/14; [ảnh và raw output](minh-chung/README.md). Thêm kiểm tra size sai, số lượng 0 và không ghi thêm đơn sau yêu cầu bị từ chối. Phần dưới giữ kết quả lượt 09/11, không cộng gộp thành một lượt chạy.
+
 ## Kết quả ngày 09 tháng 11 năm 2026
 
 - `dotnet build MixueDatMon/MixueDatMon.csproj --nologo`: thành công, 0 lỗi, 1 cảnh báo CS8602 có sẵn tại `Views/DonHang/TheoDoi.cshtml:97`. Build bằng SDK 11 preview, target net8.0.

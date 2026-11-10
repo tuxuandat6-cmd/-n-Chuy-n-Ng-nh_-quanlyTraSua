@@ -1,5 +1,7 @@
 # Nhánh A khách tự đặt hàng
 
+Cập nhật 10/11/2026: [ảnh ứng dụng và ma trận 7 bước](minh-chung/README.md), [đặc tả 2 Use Case khách hàng](USE-CASE-KHACH-HANG.md). Bộ HTTP/SQL mới đạt 14/14; số liệu cũ trong tài liệu lịch sử vẫn giữ đúng mốc.
+
 Phạm vi Nguyễn Minh Duy (`nguyenminhduy090-alt`): phần khách hàng của Issue #1, giao diện khách hàng #4 và trang chủ/menu/banner #7. Assignees đã được kiểm tra qua GitHub API. Không coi toàn bộ Issue #1 là công việc riêng của Duy.
 
 ## Nguồn và cách ghi nhận
