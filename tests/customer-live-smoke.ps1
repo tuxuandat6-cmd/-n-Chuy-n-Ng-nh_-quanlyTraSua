@@ -50,6 +50,17 @@ try {
     Check 'Status endpoint reports pending and unpaid' ($state.maTrangThai -eq 1 -and -not $state.daThanhToan)
     $missing = Invoke-WebRequest "$BaseUrl/DonHang/LayTrangThai?ma=NONEXISTENT" -SkipHttpErrorCheck
     Check 'Unknown tracking code returns 404' ($missing.StatusCode -eq 404)
+    $countQuery = 'SET NOCOUNT ON; SELECT COUNT(*) FROM DonHang;'
+    $beforeInvalid = (& sqlcmd -S $SqlServer -E -b -d $Database -h -1 -Q $countQuery) -join ''
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot count orders before invalid requests' }
+    foreach ($invalidCase in @(@{ name = 'Invalid size'; size = 999999; quantity = 1 }, @{ name = 'Zero quantity'; size = 1; quantity = 0 })) {
+        $invalidBody = @{ danhSachMon = @(@{ maMonAn = 1; maKichCo = $invalidCase.size; soLuong = $invalidCase.quantity }) } | ConvertTo-Json -Depth 4
+        $rejected = Invoke-WebRequest "$BaseUrl/DonHang/DatHang" -Method Post -WebSession $session -ContentType 'application/json' -Headers @{ RequestVerificationToken = $token } -Body $invalidBody -SkipHttpErrorCheck
+        Check ($invalidCase.name + ' returns 400') ($rejected.StatusCode -eq 400)
+    }
+    $afterInvalid = (& sqlcmd -S $SqlServer -E -b -d $Database -h -1 -Q $countQuery) -join ''
+    if ($LASTEXITCODE -ne 0) { throw 'Cannot count orders after invalid requests' }
+    Check 'Rejected invalid orders do not create SQL records' ($beforeInvalid.Trim() -eq $afterInvalid.Trim())
     [pscustomobject]@{ checkedUtc = [DateTime]::UtcNow.ToString('o'); database = $Database; trackingCode = $code; tests = $results; sqlRecord = $record } |
         ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $OutputPath -Encoding utf8
     $results | Format-Table -AutoSize
