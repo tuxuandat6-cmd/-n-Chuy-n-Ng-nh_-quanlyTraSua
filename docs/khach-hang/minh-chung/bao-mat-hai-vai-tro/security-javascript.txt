@@ -1,0 +1,21 @@
+✔ corrupt or non-array stored carts recover without breaking the menu (38.521ms)
+✔ restored cart computes toppings, updates quantity with bounds, and deletes (4.4063ms)
+✔ adding the same plain product merges its quantity (2.0131ms)
+✔ a sized non-drink does not inherit hidden drink toppings, ice or sugar (2.3413ms)
+✔ checkout keeps cart after a server failure (15.112ms)
+✔ successful checkout sends item identifiers, clears cart and navigates to tracking (3.5865ms)
+✔ tracking polls without SignalR and renders completed and cancelled states (3.9819ms)
+✔ unknown status does not overwrite the last valid display (0.9789ms)
+✔ changing quantities invalidates the applied discount instead of showing an old total (1.7421ms)
+✔ a late discount response cannot apply to a different cart (1.1793ms)
+✔ empty checkout does not send a request (1.3554ms)
+✔ checkout rejects repeated submission and freezes cart changes until failure (7.0066ms)
+✔ lost checkout response reuses the same server ticket on retry (3.0895ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 215.2734

@@ -1,0 +1,4 @@
+Test run for C:\Users\Admin\OneDrive\Documents\ChatGPT\Project_HK5_Trasua\MixueDatMon\MixueDatMon.Tests\bin\Debug\net8.0\MixueDatMon.Tests.dll (.NETCoreApp,Version=v8.0)
+A total of 1 test files matched the specified pattern.
+
+Passed!  - Failed:     0, Passed:    29, Skipped:     0, Total:    29, Duration: 829 ms - MixueDatMon.Tests.dll (net8.0)

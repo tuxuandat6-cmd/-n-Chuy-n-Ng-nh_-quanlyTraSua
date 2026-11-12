@@ -1,0 +1,112 @@
+{
+  "checkedUtc": "2026-11-10T10:00:33.8342361Z",
+  "database": "DuyCustomerTest_20261110",
+  "trackingCode": "KH6F9682156ADA4DE1AC",
+  "tests": [
+    {
+      "test": "Homepage reads SQL-backed featured menu",
+      "status": "PASS"
+    },
+    {
+      "test": "Menu and checkout form render",
+      "status": "PASS"
+    },
+    {
+      "test": "Checkout without antiforgery token is rejected",
+      "status": "PASS"
+    },
+    {
+      "test": "Checkout succeeds against actual SQL Server",
+      "status": "PASS"
+    },
+    {
+      "test": "SQL persists quantity, authoritative price, size, ice, sugar and topping",
+      "status": "PASS"
+    },
+    {
+      "test": "Saved order renders on tracking page",
+      "status": "PASS"
+    },
+    {
+      "test": "Ordering browser session sees its order in history",
+      "status": "PASS"
+    },
+    {
+      "test": "History total includes topping prices",
+      "status": "PASS"
+    },
+    {
+      "test": "A fresh browser session does not list the saved order",
+      "status": "PASS"
+    },
+    {
+      "test": "Status endpoint reports pending and unpaid",
+      "status": "PASS"
+    },
+    {
+      "test": "Unknown tracking code returns 404",
+      "status": "PASS"
+    },
+    {
+      "test": "Invalid size returns 400",
+      "status": "PASS"
+    },
+    {
+      "test": "Zero quantity returns 400",
+      "status": "PASS"
+    },
+    {
+      "test": "Rejected invalid orders do not create SQL records",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP replay returns the original order code",
+      "status": "PASS"
+    },
+    {
+      "test": "HTTP replay does not insert another SQL order",
+      "status": "PASS"
+    },
+    {
+      "test": "Other browser cannot access TheoDoi even with known code",
+      "status": "PASS"
+    },
+    {
+      "test": "Other browser cannot access LayTrangThai even with known code",
+      "status": "PASS"
+    },
+    {
+      "test": "Other browser cannot access AnhQr even with known code",
+      "status": "PASS"
+    },
+    {
+      "test": "Unsigned forged ownership cookie is rejected",
+      "status": "PASS"
+    },
+    {
+      "test": "Checkout ticket cannot be replayed with changed body",
+      "status": "PASS"
+    },
+    {
+      "test": "Concurrent initial checkout requests both succeed",
+      "status": "PASS"
+    },
+    {
+      "test": "Concurrent requests resolve to one tracking code",
+      "status": "PASS"
+    },
+    {
+      "test": "Concurrent requests persist exactly one SQL order and one line",
+      "status": "PASS"
+    }
+  ],
+  "sqlRecord": {
+    "SoLuong": 2,
+    "DonGia": 25000,
+    "MaKichCo": 1,
+    "MaMucDa": 2,
+    "MaMucDuong": 3,
+    "ToppingGia": 3000,
+    "TongTien": 56000
+  }
+}

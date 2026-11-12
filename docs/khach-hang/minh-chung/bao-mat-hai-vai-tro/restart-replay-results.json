@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "sourceSha": "1df86e6e486102003e04da0b2ed301d933ade426",
+  "checkedUtc": "2026-11-10T10:00:22.2754005Z",
+  "restartedProcess": true,
+  "sameTrackingCode": true,
+  "orders": 1,
+  "lines": 1,
+  "database": "DuyCustomerTest_20261110"
+}

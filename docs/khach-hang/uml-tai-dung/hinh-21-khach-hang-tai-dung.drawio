@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net" agent="Customer diagram reconstruction; not original source">
+  <diagram id="Tái dựng Hình 21" name="Tái dựng Hình 21">
+    <mxGraphModel page="1" pageWidth="1400" pageHeight="1100">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="provenance" value="TÁI DỰNG từ bao_cao_ck.docx / Hình 21 — không phải file thiết kế gốc" style="text;html=0;fontSize=14;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="10" width="1250" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="g1" value="VÀO QUÁN &amp; CHỌN THỰC ĐƠN" style="rounded=1;html=0;verticalAlign=top;spacingTop=12;fillColor=#E8F3EF;strokeColor=#C7D9D1;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="70" width="1170" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="g2" value="ĐẶT HÀNG &amp; THANH TOÁN" style="rounded=1;html=0;verticalAlign=top;spacingTop=12;fillColor=#E8F3EF;strokeColor=#C7D9D1;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="300" width="1170" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="g3" value="TRONG KHI CHỜ &amp; SAU KHI DÙNG" style="rounded=1;html=0;verticalAlign=top;spacingTop=12;fillColor=#E8F3EF;strokeColor=#C7D9D1;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="120" y="530" width="1170" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="actor" value="Khách hàng" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=0;" vertex="1" parent="1">
+          <mxGeometry x="20" y="330" width="50" height="95" as="geometry" />
+        </mxCell>
+        <mxCell id="form" value="Chọn hình thức dùng&#10;(tại bàn / mang đi)" style="ellipse;html=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#B6C8C0;" vertex="1" parent="1">
+          <mxGeometry x="155" y="145" width="235" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="actor-form" value="" style="edgeStyle=orthogonalEdgeStyle;html=0;endArrow=none;" edge="1" parent="1" source="actor" target="form">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qr" value="Quét mã QR tại bàn" style="ellipse;html=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#B6C8C0;" vertex="1" parent="1">
+          <mxGeometry x="435" y="145" width="235" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="actor-qr" value="" style="edgeStyle=orthogonalEdgeStyle;html=0;endArrow=none;" edge="1" parent="1" source="actor" target="qr">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="menu" value="Xem thực đơn &amp; món&#10;hay mua cùng" style="ellipse;html=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#B6C8C0;" vertex="1" parent="1">
+          <mxGeometry x="715" y="145" width="235" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="actor-menu" value="" style="edgeStyle=orthogonalEdgeStyle;html=0;endArrow=none;" edge="1" parent="1" source="actor" target="menu">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="reviews" value="Xem đánh giá của&#10;từng món" style="ellipse;html=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#B6C8C0;" vertex="1" parent="1">
+          <mxGeometry x="995" y="145" width="235" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="actor-reviews" value="" style="edgeStyle=orthogonalEdgeStyle;html=0;endArrow=none;" edge="1" parent="1" source="actor" target="reviews">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="order" value="Đặt hàng" style="ellipse;html=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#B6C8C0;" vertex="1" parent="1">
+          <mxGeometry x="210" y="385" width="235" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="actor-order" value="" style="edgeStyle=orthogonalEdgeStyle;html=0;endArrow=none;" edge="1" parent="1" source="actor" target="order">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="discount" value="Áp mã giảm giá" style="ellipse;html=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#B6C8C0;" vertex="1" parent="1">
+          <mxGeometry x="560" y="385" width="235" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="actor-discount" value="" style="edgeStyle=orthogonalEdgeStyle;html=0;endArrow=none;" edge="1" parent="1" source="actor" target="discount">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="pay" value="Xem mã QR chuyển khoản" style="ellipse;html=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#B6C8C0;" vertex="1" parent="1">
+          <mxGeometry x="930" y="385" width="235" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="actor-pay" value="" style="edgeStyle=orthogonalEdgeStyle;html=0;endArrow=none;" edge="1" parent="1" source="actor" target="pay">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="help" value="Gọi nhân viên hỗ trợ" style="ellipse;html=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#B6C8C0;" vertex="1" parent="1">
+          <mxGeometry x="155" y="615" width="235" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="actor-help" value="" style="edgeStyle=orthogonalEdgeStyle;html=0;endArrow=none;" edge="1" parent="1" source="actor" target="help">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="track" value="Theo dõi đơn của tôi" style="ellipse;html=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#B6C8C0;" vertex="1" parent="1">
+          <mxGeometry x="435" y="615" width="235" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="actor-track" value="" style="edgeStyle=orthogonalEdgeStyle;html=0;endArrow=none;" edge="1" parent="1" source="actor" target="track">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="points" value="Xem điểm tích lũy" style="ellipse;html=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#B6C8C0;" vertex="1" parent="1">
+          <mxGeometry x="715" y="615" width="235" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="actor-points" value="" style="edgeStyle=orthogonalEdgeStyle;html=0;endArrow=none;" edge="1" parent="1" source="actor" target="points">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="feedback" value="Gửi đánh giá dịch vụ &amp;&#10;món ăn" style="ellipse;html=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#B6C8C0;" vertex="1" parent="1">
+          <mxGeometry x="995" y="615" width="235" height="65" as="geometry" />
+        </mxCell>
+        <mxCell id="actor-feedback" value="" style="edgeStyle=orthogonalEdgeStyle;html=0;endArrow=none;" edge="1" parent="1" source="actor" target="feedback">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include-menu" value="«include»" style="edgeStyle=orthogonalEdgeStyle;html=0;dashed=1;endArrow=open;" edge="1" parent="1" source="qr" target="menu">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="extend-review" value="«extend»" style="edgeStyle=orthogonalEdgeStyle;html=0;dashed=1;endArrow=open;" edge="1" parent="1" source="menu" target="reviews">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="include-discount" value="«include»" style="edgeStyle=orthogonalEdgeStyle;html=0;dashed=1;endArrow=open;" edge="1" parent="1" source="order" target="discount">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="extend-pay" value="«extend» nếu chọn CK" style="edgeStyle=orthogonalEdgeStyle;html=0;dashed=1;endArrow=open;" edge="1" parent="1" source="order" target="pay">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="extend-feedback" value="«extend» khi đã xong" style="edgeStyle=orthogonalEdgeStyle;html=0;dashed=1;endArrow=open;" edge="1" parent="1" source="track" target="feedback">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
